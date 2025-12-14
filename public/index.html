@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EET Calculator (FIS Alpine)</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <h1 class="title" id="title">EET Calculator</h1>
+        <p class="subtitle" id="subtitle">
+          Paste timing lines (BIB, System B/manual TOD, System A TOD or “missing time”) and calculate the
+          missing System A time.
+        </p>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Tools">
+        <button class="tab isActive" id="tabEet" type="button" role="tab" aria-selected="true" aria-controls="panelEet">
+          EET Calculator
+        </button>
+        <button class="tab" id="tabDiff" type="button" role="tab" aria-selected="false" aria-controls="panelDiff">
+          Difference
+        </button>
+        <button class="tab" id="tabBulk" type="button" role="tab" aria-selected="false" aria-controls="panelBulk">
+          Bulk Difference
+        </button>
+        <button class="tab" id="tabPoints" type="button" role="tab" aria-selected="false" aria-controls="panelPoints">
+          Point calculation
+        </button>
+      </nav>
+
+      <section class="card tabPanel isActive" id="panelEet" role="tabpanel" aria-labelledby="tabEet">
+        <div class="row">
+          <label class="label" for="missingBib" id="missingBibLabel">Missing BIB (optional)</label>
+          <input class="input" id="missingBib" type="number" min="1" step="1" placeholder="auto-detect" />
+          <button class="button" id="calcBtn" type="button">Calculate</button>
+        </div>
+
+        <label class="label" for="timingText" id="timingLabel">Timing paste</label>
+        <textarea
+          class="textarea"
+          id="timingText"
+          rows="14"
+          spellcheck="false"
+          placeholder="Example:
+11 13:00:00.483 13:00:00.263
+12 13:00:26.521 13:00:26.880
+...
+22 13:04:12.158 missed time"
+        ></textarea>
+
+        <div class="result" id="result" aria-live="polite"></div>
+      </section>
+
+      <section class="card tabPanel" id="panelDiff" role="tabpanel" aria-labelledby="tabDiff">
+        <h2 class="panelTitle" id="diffTitle">Time difference</h2>
+        <p class="panelHelp" id="diffHelp">
+          Enter finish time-of-day and start time-of-day. Result is the run duration (Finish − Start).
+        </p>
+
+        <div class="diffGrid">
+          <div>
+            <label class="label" for="finishTod" id="finishLabel">Finish TOD</label>
+            <input class="input monoInput" id="finishTod" type="text" placeholder="10:07:51.5814" />
+          </div>
+          <div>
+            <label class="label" for="startTod" id="startLabel">Start TOD</label>
+            <input class="input monoInput" id="startTod" type="text" placeholder="10:06:06.4347" />
+          </div>
+          <div class="diffButtonWrap">
+            <button class="button" id="diffBtn" type="button">Calculate</button>
+          </div>
+        </div>
+
+        <div class="result" id="diffResult" aria-live="polite"></div>
+      </section>
+
+      <section class="card tabPanel" id="panelBulk" role="tabpanel" aria-labelledby="tabBulk">
+        <h2 class="panelTitle" id="bulkTitle">Bulk Difference</h2>
+        <p class="panelHelp" id="bulkHelp">
+          Paste multiple lines. Each line may have multiple space-separated columns. The first two columns that look like times
+          will be used to calculate the difference (2nd − 1st).
+        </p>
+
+        <label class="label" for="bulkText" id="bulkLabel">Input</label>
+        <textarea
+          class="textarea"
+          id="bulkText"
+          rows="12"
+          spellcheck="false"
+          placeholder="Examples:
+11:05:00,235 11:07:04,108
+11:06:00,024 11:08:01,431
+
+3 11:07:01,176 11:08:59,937
+4 11:07:59,572 11:09:59,439
+5 11:09:01,234 11:11:13.014 some_comment and another comment."
+        ></textarea>
+
+        <div class="bulkActions">
+          <button class="button" id="bulkBtn" type="button">Calculate</button>
+        </div>
+
+        <div class="result" id="bulkResult" aria-live="polite"></div>
+      </section>
+
+      <section class="card tabPanel" id="panelPoints" role="tabpanel" aria-labelledby="tabPoints">
+        <h2 class="panelTitle" id="pointsTitle">Point calculation</h2>
+        <p class="panelHelp" id="pointsHelp">
+          Calculates DSV points = race points + race surcharge. Provide discipline F-value, minimum surcharge category and adders,
+          plus results and starter points lists.
+        </p>
+
+        <div class="pointsGrid">
+          <div>
+            <label class="label" for="discipline" id="disciplineLabel">Discipline</label>
+            <select class="input" id="discipline">
+              <option value="SL">SL (F=730)</option>
+              <option value="RS">RS/GS (F=1010)</option>
+              <option value="SG">SG (F=1190)</option>
+              <option value="PAR">Parallel (F=1190)</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="fValue" id="fValueLabel">F value</label>
+            <input class="input" id="fValue" type="number" step="1" min="1" value="730" />
+          </div>
+          <div>
+            <label class="label" for="minSurcharge" id="minSurchargeLabel">Minimum surcharge</label>
+            <select class="input" id="minSurcharge">
+              <option value="0">Category 1: 0</option>
+              <option value="10">Category 2: 10</option>
+              <option value="25" selected>Category 3: 25</option>
+              <option value="30">Indoor / Parallel: 30</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="adder" id="adderLabel">Adder(s)</label>
+            <input class="input" id="adder" type="number" step="0.01" value="0" />
+          </div>
+          <div class="pointsChecks">
+            <label class="check">
+              <input type="checkbox" id="useResultsAsStarters" checked />
+              <span id="useResultsAsStartersLabel">Use results list as starters list</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="missingPointsAs250" checked />
+              <span id="missingPointsAs250Label">Missing points count as 250.00</span>
+            </label>
+          </div>
+          <div class="pointsButtonWrap">
+            <button class="button" id="pointsBtn" type="button">Calculate</button>
+          </div>
+        </div>
+
+        <label class="label" for="resultsText" id="resultsLabel">Results (finishers)</label>
+        <textarea class="textarea" id="resultsText" rows="10" spellcheck="false" placeholder="Example:
+1 5 1:03,00 67,87
+2 11 1:03,04 88,02
+3 16 1:04,12 61,69
+4 28 1:04,23 94.14 
+5 4 1:04,26 62,44 
+6 3 1:04,33 90,31
+7 1 1:05,64 101,97
+8 12 1:05,67 77,97
+9 9 1:06,45 75,90
+10 6 1:12.34 138,68
+..."></textarea>
+
+        <div class="startersBlock" id="startersBlock">
+          <label class="label" for="startersText" id="startersLabel">Starters (all started, regardless of rank)</label>
+          <textarea class="textarea" id="startersText" rows="6" spellcheck="false" placeholder="Example:
+3 32.55
+9 18.22
+..."></textarea>
+        </div>
+
+        <div class="result" id="pointsResult" aria-live="polite"></div>
+      </section>
+
+      <footer class="footer">
+        <small class="footerText" id="footerText">
+          Implements FIS EET correction from 10 reference competitors and FIS rounding examples.
+        </small>
+      </footer>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
+
+
