@@ -1,6 +1,6 @@
 {
-  "title": "EET Calculator",
-  "subtitle": "Paste lines with BIB, System B/manual time (TOD) and System A time (TOD) or “missing time” to calculate the missing System A time.",
+  "title": "EET Tools",
+  "subtitle": "Select a tool tab to calculate EET, time differences, or points.",
   "tabEet": "EET Calculator",
   "tabDiff": "Difference",
   "tabBulk": "Bulk Difference",
@@ -70,7 +70,19 @@
   "flagWinner": "winner",
   "flagTop10": "top10",
   "flagSumA": "sumA",
-  "footer": "Implements the FIS EET correction from 10 reference racers and the official rounding rules."
+  "footer": "Select a tab above to use a tool.",
+  "headerTitleEet": "EET Calculator",
+  "headerSubtitleEet": "Paste lines with BIB, System B/manual time (TOD) and System A time (TOD) or “missing time” to calculate the missing System A time.",
+  "footerEet": "Implements the FIS EET correction from 10 reference racers and the official rounding rules.",
+  "headerTitleDiff": "Time difference",
+  "headerSubtitleDiff": "Calculate the run duration between a finish time-of-day and a start time-of-day (Finish − Start).",
+  "footerDiff": "Outputs are truncated (no rounding): 1/10000 and 1/100.",
+  "headerTitleBulk": "Bulk Difference",
+  "headerSubtitleBulk": "Paste multiple lines and calculate the difference for the first two time values on each line.",
+  "footerBulk": "Supports extra columns and comments; uses the first two time tokens per line.",
+  "headerTitlePoints": "Point calculation",
+  "headerSubtitlePoints": "Calculate DSV points = race points + race surcharge (Zuschlag).",
+  "footerPoints": "Race points are rounded to 2 decimals (half-up); surcharges follow Sum A/B/C and minimum + adders."
 }
 
 

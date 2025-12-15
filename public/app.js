@@ -10,8 +10,12 @@ const loadLocale = async () => {
   }
 };
 
+let localeDict = null;
+
 const applyLocale = (dict) => {
   if (!dict) return;
+
+  localeDict = dict;
 
   const setText = (id, text) => {
     const el = byId(id);
@@ -245,6 +249,10 @@ const main = async () => {
   const dict = await loadLocale();
   applyLocale(dict);
 
+  const headerTitleEl = byId("title");
+  const headerSubtitleEl = byId("subtitle");
+  const footerTextEl = byId("footerText");
+
   const tabEet = byId("tabEet");
   const tabDiff = byId("tabDiff");
   const tabBulk = byId("tabBulk");
@@ -253,6 +261,40 @@ const main = async () => {
   const panelDiff = byId("panelDiff");
   const panelBulk = byId("panelBulk");
   const panelPoints = byId("panelPoints");
+
+  const setHeaderFooterForTab = (name) => {
+    const d = localeDict;
+    if (!d) return;
+
+    const map = {
+      eet: {
+        title: d.headerTitleEet,
+        subtitle: d.headerSubtitleEet,
+        footer: d.footerEet
+      },
+      diff: {
+        title: d.headerTitleDiff,
+        subtitle: d.headerSubtitleDiff,
+        footer: d.footerDiff
+      },
+      bulk: {
+        title: d.headerTitleBulk,
+        subtitle: d.headerSubtitleBulk,
+        footer: d.footerBulk
+      },
+      points: {
+        title: d.headerTitlePoints,
+        subtitle: d.headerSubtitlePoints,
+        footer: d.footerPoints
+      }
+    };
+
+    const entry = map[name] ?? { title: d.title, subtitle: d.subtitle, footer: d.footer };
+    if (headerTitleEl && entry.title) headerTitleEl.textContent = entry.title;
+    if (headerSubtitleEl && entry.subtitle) headerSubtitleEl.textContent = entry.subtitle;
+    if (footerTextEl && entry.footer) footerTextEl.textContent = entry.footer;
+    if (entry.title) document.title = `${entry.title} (FIS Alpine)`;
+  };
 
   const setActiveTab = (name) => {
     const isEet = name === "eet";
@@ -283,12 +325,17 @@ const main = async () => {
     if (panelDiff) panelDiff.classList.toggle("isActive", isDiff);
     if (panelBulk) panelBulk.classList.toggle("isActive", isBulk);
     if (panelPoints) panelPoints.classList.toggle("isActive", isPoints);
+
+    setHeaderFooterForTab(name);
   };
 
   if (tabEet) tabEet.addEventListener("click", () => setActiveTab("eet"));
   if (tabDiff) tabDiff.addEventListener("click", () => setActiveTab("diff"));
   if (tabBulk) tabBulk.addEventListener("click", () => setActiveTab("bulk"));
   if (tabPoints) tabPoints.addEventListener("click", () => setActiveTab("points"));
+
+  // Initialize page chrome for the default tab.
+  setHeaderFooterForTab("eet");
 
   const btn = byId("calcBtn");
   const timingText = byId("timingText");
